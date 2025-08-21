@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador de Aromas: O Que Cada Aroma Transmite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .content-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+        }
+
+        .category-selector {
+            margin-bottom: 25px;
+        }
+
+        .category-selector h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .category-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            color: #495057;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .category-btn:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .purpose-selector {
+            margin-bottom: 25px;
+        }
+
+        .purpose-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 12px;
+            margin: 6px 0;
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 8px;
+            color: #856404;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .purpose-btn:hover {
+            background: #ffeaa7;
+            transform: translateX(3px);
+        }
+
+        .purpose-btn.active {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #2d3436;
+            border-color: #fdcb6e;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .aroma-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .aroma-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+            cursor: pointer;
+        }
+
+        .aroma-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .aroma-card.citricos {
+            border-left-color: #ffeaa7;
+        }
+
+        .aroma-card.florais {
+            border-left-color: #fd79a8;
+        }
+
+        .aroma-card.amadeirados {
+            border-left-color: #8d6e63;
+        }
+
+        .aroma-card.especiarias {
+            border-left-color: #e17055;
+        }
+
+        .aroma-card.herbais {
+            border-left-color: #00b894;
+        }
+
+        .aroma-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .aroma-category {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .category-citricos {
+            background: #ffeaa7;
+            color: #2d3436;
+        }
+
+        .category-florais {
+            background: #fd79a8;
+            color: white;
+        }
+
+        .category-amadeirados {
+            background: #8d6e63;
+            color: white;
+        }
+
+        .category-especiarias {
+            background: #e17055;
+            color: white;
+        }
+
+        .category-herbais {
+            background: #00b894;
+            color: white;
+        }
+
+        .aroma-transmission {
+            font-style: italic;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+        }
+
+        .aroma-description {
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .aroma-uses {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .aroma-uses h5 {
+            color: #764ba2;
+            margin-bottom: 8px;
+        }
+
+        .category-overview {
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .category-overview h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+
+        .category-overview p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .filter-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1565c0;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .purpose-collection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .purpose-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .purpose-card h4 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .purpose-card p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .aroma-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Explorador de Aromas</h1>
+            <p>Descubra o que cada aroma transmite e como utilizá-los em suas velas artesanais</p>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="category-selector">
+                    <h3>Categorias de Aromas</h3>
+                    <button class="category-btn active" onclick="showCategory('todos')">Todos os Aromas</button>
+                    <button class="category-btn" onclick="showCategory('citricos')">Cítricos</button>
+                    <button class="category-btn" onclick="showCategory('florais')">Florais</button>
+                    <button class="category-btn" onclick="showCategory('amadeirados')">Amadeirados</button>
+                    <button class="category-btn" onclick="showCategory('especiarias')">Especiarias</button>
+                    <button class="category-btn" onclick="showCategory('herbais')">Herbais</button>
+                </div>
+
+                <div class="purpose-selector">
+                    <h3>Finalidade</h3>
+                    <button class="purpose-btn" onclick="showPurpose('meditacao')">Meditação</button>
+                    <button class="purpose-btn" onclick="showPurpose('terapeutico')">Terapêutico</button>
+                    <button class="purpose-btn" onclick="showPurpose('relaxamento')">Relaxamento</button>
+                    <button class="purpose-btn" onclick="showPurpose('medicinal')">Medicinal</button>
+                    <button class="purpose-btn" onclick="showPurpose('perfumar')">Perfumar</button>
+                </div>
+
+                <input type="text" class="search-box" placeholder="Buscar aroma..." onkeyup="searchAromas(this.value)">
+            </div>
+
+            <div class="content-area">
+                <div id="content-display">
+                    <!-- Conteúdo será inserido aqui via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const aromasData = {
+            citricos: [
+                {
+                    name: "Limão",
+                    transmission: "Energia, revitalização, clareza mental",
+                    description: "Um dos aromas mais refrescantes, transmite energia e revitalização. Excelente para ajudar a clarear a mente e trazer um ambiente mais limpo e arejado.",
+                    uses: "Ideal para escritórios, áreas de trabalho ou momentos que precisam de foco e concentração."
+                },
+                {
+                    name: "Laranja",
+                    transmission: "Alegria, otimismo, alívio do estresse",
+                    description: "Mais suave que o limão, mas igualmente energizante. Ajuda a aliviar o estresse e a ansiedade, trazendo sensação de alegria e otimismo.",
+                    uses: "Perfeito para salas de estar, cozinhas e ambientes familiares."
+                },
+                {
+                    name: "Bergamota",
+                    transmission: "Equilíbrio, energia positiva, calma",
+                    description: "Combina propriedades cítricas com toque suave de especiarias, proporcionando efeito calmante com energia positiva. Ótima escolha para equilíbrio entre relaxamento e revitalização.",
+                    uses: "Ideal para ambientes de transição, como halls de entrada e salas de estar."
+                }
+            ],
+            florais: [
+                {
+                    name: "Lavanda",
+                    transmission: "Calma, relaxamento, tranquilidade",
+                    description: "Extremamente popular, conhecida por propriedades calmantes e relaxantes. Ajuda a aliviar ansiedade e estresse, criando ambiente tranquilo e propício ao descanso.",
+                    uses: "Perfeita para quartos, banheiros e áreas de relaxamento."
+                },
+                {
+                    name: "Jasmim",
+                    transmission: "Romance, sensualidade, relaxamento",
+                    description: "Considerado afrodisíaco, traz sensação de romance e sensualidade. Seu aroma doce e delicado também tem propriedades relaxantes.",
+                    uses: "Excelente para criar atmosfera amorosa e íntima em quartos e salas."
+                },
+                {
+                    name: "Rosa",
+                    transmission: "Romantismo, elegância, conforto emocional",
+                    description: "Sinônimo de romantismo e elegância. Proporciona sensação de conforto e bem-estar emocional, criando ambiente suave e relaxante.",
+                    uses: "Perfeito para momentos de autocuidado, encontros especiais e ambientes femininos."
+                }
+            ],
+            amadeirados: [
+                {
+                    name: "Sândalo",
+                    transmission: "Paz espiritual, conexão, meditação",
+                    description: "Aroma espiritual e profundo, conhecido por propriedades meditativas e calmantes. Ajuda a estabilizar emoções e promove sensação de paz e conexão espiritual.",
+                    uses: "Muito utilizado em práticas meditativas e rituais de purificação."
+                },
+                {
+                    name: "Cedro",
+                    transmission: "Força, estabilidade, purificação",
+                    description: "Aroma mais seco e terroso. Transmite sensação de força e estabilidade, sendo ótimo para momentos de concentração e foco. Também utilizado para purificar o ambiente.",
+                    uses: "Ideal para escritórios, bibliotecas e áreas de estudo."
+                },
+                {
+                    name: "Patchouli",
+                    transmission: "Enraizamento, segurança, introspecção",
+                    description: "Aroma intenso e terroso, tanto relaxante quanto estimulante. Ajuda a equilibrar emoções e promove sentimento de enraizamento e segurança.",
+                    uses: "Amplamente usado para criar atmosfera de segurança e introspecção."
+                }
+            ],
+            especiarias: [
+                {
+                    name: "Canela",
+                    transmission: "Conforto, aconchego, calor do lar",
+                    description: "Aroma doce e quente que transmite conforto e aconchego. Perfeita para criar ambiente acolhedor, especialmente em épocas mais frias ou momentos de celebração.",
+                    uses: "Ideal para salas de estar, cozinhas e celebrações como o Natal."
+                },
+                {
+                    name: "Cravo",
+                    transmission: "Aconchego, energia suave, aquecimento",
+                    description: "Aroma intenso e picante que aquece o ambiente e cria sensação de aconchego. Também tem propriedades estimulantes de forma suave.",
+                    uses: "Ótimo para ambientes familiares e momentos de reunião."
+                },
+                {
+                    name: "Gengibre",
+                    transmission: "Vitalidade, calor, energia focada",
+                    description: "Com nota picante e fresca, tem efeito revigorante e confortante. Traz sensação de vitalidade e calor, sendo ideal para ambientes que buscam energia e foco.",
+                    uses: "Perfeito para escritórios domésticos e áreas de atividade."
+                }
+            ],
+            herbais: [
+                {
+                    name: "Alecrim",
+                    transmission: "Concentração, foco, clareza mental",
+                    description: "Aroma forte e revigorante, perfeito para promover concentração e foco. Estimula a mente e clareia os pensamentos.",
+                    uses: "Ideal para ambientes de estudo, trabalho e atividades que exigem concentração."
+                },
+                {
+                    name: "Eucalipto",
+                    transmission: "Limpeza, purificação, renovação",
+                    description: "Com propriedades refrescantes e descongestionantes, traz sensação de limpeza e purificação ao ambiente. Ótimo para frescor e renovação.",
+                    uses: "Excelente para banheiros, áreas de exercício e ambientes que precisam de renovação."
+                },
+                {
+                    name: "Hortelã-pimenta",
+                    transmission: "Alerta, renovação, despertar dos sentidos",
+                    description: "Refrescante e energizante, desperta os sentidos e promove vitalidade. Ótimo para criar atmosfera de alerta e renovação.",
+                    uses: "Perfeito para momentos em que você precisa de um 'despertar' e renovação de energia."
+                }
+            ]
+        };
+
+        const purposeData = {
+            meditacao: [
+                { name: "Sândalo", effect: "Aroma profundo e espiritual, ajuda a silenciar a mente e promover introspecção" },
+                { name: "Olíbano (Incenso)", effect: "Tradicionalmente usado em práticas religiosas, promove conexão espiritual e paz interior" },
+                { name: "Patchouli", effect: "Terroso e reconfortante, ajuda a equilibrar emoções e criar ambiente de estabilidade" },
+                { name: "Lavanda", effect: "Relaxante e calmante, promove serenidade e alivia ansiedade durante a meditação" },
+                { name: "Vetiver", effect: "Conhecido como 'óleo da tranquilidade', ajuda a ancorar e estabilizar a mente" }
+            ],
+            terapeutico: [
+                { name: "Lavanda", effect: "Propriedades calmantes, auxilia no alívio do estresse e ansiedade, promove sono tranquilo" },
+                { name: "Alecrim", effect: "Estimulante mental, melhora memória e concentração, combate fadiga mental" },
+                { name: "Eucalipto", effect: "Descongestionante natural, excelente para aliviar sintomas de resfriados" },
+                { name: "Hortelã-Pimenta", effect: "Refrescante e energizante, alivia dores de cabeça e melhora concentração" },
+                { name: "Bergamota", effect: "Revigorante e calmante, auxilia no tratamento de depressão e ansiedade" }
+            ],
+            relaxamento: [
+                { name: "Lavanda", effect: "O aroma por excelência para relaxamento, reduz estresse e ansiedade" },
+                { name: "Camomila", effect: "Suave e calmante, alivia tensão e facilita sono profundo e reparador" },
+                { name: "Ylang-Ylang", effect: "Aroma floral doce que acalma nervos e reduz sentimentos de raiva" },
+                { name: "Baunilha", effect: "Doce e reconfortante, cria atmosfera acolhedora e relaxante" },
+                { name: "Sândalo", effect: "Amadeirado e profundo, traz serenidade e ajuda a desacelerar a mente" }
+            ],
+            medicinal: [
+                { name: "Eucalipto", effect: "Descongestionante poderoso, alivia problemas respiratórios como sinusite" },
+                { name: "Tea Tree", effect: "Antisséptico natural com propriedades antifúngicas e antibacterianas" },
+                { name: "Hortelã-Pimenta", effect: "Refrescante, ajuda a aliviar dores de cabeça e enxaquecas" },
+                { name: "Gengibre", effect: "Aquecedor e anti-inflamatório, alivia dores musculares e melhora circulação" },
+                { name: "Tomilho", effect: "Propriedades antivirais e antibacterianas, ajuda no tratamento de infecções respiratórias" }
+            ],
+            perfumar: [
+                { name: "Lavanda", effect: "Aroma floral suave, ideal para criar ambiente relaxante e acolhedor" },
+                { name: "Limão", effect: "Fresco e energizante, excelente para manter ambiente com cheiro limpo" },
+                { name: "Baunilha", effect: "Doce e reconfortante, traz sensação de acolhimento e aconchego" },
+                { name: "Jasmim", effect: "Aroma floral delicado e elegante, perfeito para toque romântico" },
+                { name: "Rosa", effect: "Delicado e suave, ideal para criar ambiente elegante e romântico" }
+            ]
+        };
+
+        let currentFilter = 'todos';
+
+        function showCategory(category) {
+            currentFilter = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Clear purpose filter
+            document.querySelectorAll('.purpose-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const contentDisplay = document.getElementById('content-display');
+            
+            if (category === 'todos') {
+                showAllAromas();
+            } else {
+                showCategoryAromas(category);
+            }
+        }
+
+        function showPurpose(purpose) {
+            // Update active button
+            document.querySelectorAll('.purpose-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Clear category filter
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            
+            showPurposeCollection(purpose);
+        }
+
+        function showAllAromas() {
+            const contentDisplay = document.getElementById('content-display');
+            let html = `
+                <div class="category-overview">
+                    <h2>Todos os Aromas</h2>
+                    <p>Explore nossa coleção completa de aromas e descubra as propriedades únicas de cada um para suas velas artesanais.</p>
+                </div>
+                <div class="aroma-grid">
+            `;
+            
+            Object.keys(aromasData).forEach(category => {
+                aromasData[category].forEach(aroma => {
+                    html += createAromaCard(aroma, category);
+                });
+            });
+            
+            html += '</div>';
+            contentDisplay.innerHTML = html;
+        }
+
+        function showCategoryAromas(category) {
+            const contentDisplay = document.getElementById('content-display');
+            const categoryNames = {
+                citricos: 'Cítricos',
+                florais: 'Florais', 
+                amadeirados: 'Amadeirados',
+                especiarias: 'Especiarias',
+                herbais: 'Herbais'
+            };
+            
+            const categoryDescriptions = {
+                citricos: 'Aromas revigorantes e estimulantes que trazem frescor, clareza mental e leveza.',
+                florais: 'Aromas suaves, femininos e delicados que trazem conforto, tranquilidade e romance.',
+                amadeirados: 'Aromas profundos, terrosos e cheios de nuances que evocam conexão com a natureza.',
+                especiarias: 'Aromas quentes e envolventes que trazem sensação de conforto e acolhimento.',
+                herbais: 'Aromas purificadores e revitalizantes que trazem frescor e limpeza energética.'
+            };
+            
+            let html = `
+                <div class="category-overview">
+                    <h2>${categoryNames[category]}</h2>
+                    <p>${categoryDescriptions[category]}</p>
+                </div>
+                <div class="aroma-grid">
+            `;
+            
+            aromasData[category].forEach(aroma => {
+                html += createAromaCard(aroma, category);
+            });
+            
+            html += '</div>';
+            contentDisplay.innerHTML = html;
+        }
+
+        function showPurposeCollection(purpose) {
+            const contentDisplay = document.getElementById('content-display');
+            const purposeNames = {
+                meditacao: 'Meditação',
+                terapeutico: 'Terapêutico',
+                relaxamento: 'Relaxamento',
+                medicinal: 'Medicinal',
+                perfumar: 'Perfumar'
+            };
+            
+            const purposeDescriptions = {
+                meditacao: '15 aromas perfeitos para práticas meditativas e conexão espiritual',
+                terapeutico: '15 aromas exclusivos com propriedades terapêuticas para bem-estar',
+                relaxamento: '15 aromas incríveis para relaxamento profundo e alívio do estresse',
+                medicinal: '15 aromas de cura com propriedades medicinais comprovadas',
+                perfumar: '15 aromas ideais para perfumar ambientes com elegância'
+            };
+            
+            let html = `
+                <div class="category-overview">
+                    <h2>${purposeNames[purpose]}</h2>
+                    <p>${purposeDescriptions[purpose]}</p>
+                </div>
+                <div class="purpose-collection">
+            `;
+            
+            purposeData[purpose].forEach(aroma => {
+                html += `
+                    <div class="purpose-card">
+                        <h4>${aroma.name}</h4>
+                        <p>${aroma.effect}</p>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            contentDisplay.innerHTML = html;
+        }
+
+        function createAromaCard(aroma, category) {
+            const categoryLabels = {
+                citricos: 'Cítrico',
+                florais: 'Floral',
+                amadeirados: 'Amadeirado',
+                especiarias: 'Especiaria',
+                herbais: 'Herbal'
+            };
+            
+            return `
+                <div class="aroma-card ${category}">
+                    <div class="aroma-name">${aroma.name}</div>
+                    <span class="aroma-category category-${category}">${categoryLabels[category]}</span>
+                    <div class="aroma-transmission">${aroma.transmission}</div>
+                    <div class="aroma-description">${aroma.description}</div>
+                    <div class="aroma-uses">
+                        <h5>Como usar:</h5>
+                        ${aroma.uses}
+                    </div>
+                </div>
+            `;
+        }
+
+        function searchAromas(searchTerm) {
+            const contentDisplay = document.getElementById('content-display');
+            
+            if (!searchTerm.trim()) {
+                if (currentFilter === 'todos') {
+                    showAllAromas();
+                } else {
+                    showCategoryAromas(currentFilter);
+                }
+                return;
+            }
+            
+            const results = [];
+            Object.keys(aromasData).forEach(category => {
+                aromasData[category].forEach(aroma => {
+                    if (aroma.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        aroma.transmission.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        aroma.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+                        results.push({aroma, category});
+                    }
+                });
+            });
+            
+            let html = `
+                <div class="filter-info">
+                    <strong>Resultados da busca por "${searchTerm}":</strong> ${results.length} aromas encontrados
+                </div>
+            `;
+            
+            if (results.length === 0) {
+                html += `
+                    <div class="no-results">
+                        Nenhum aroma encontrado para "${searchTerm}". Tente termos como "relaxamento", "energia", "floral" ou nomes específicos.
+                    </div>
+                `;
+            } else {
+                html += '<div class="aroma-grid">';
+                results.forEach(result => {
+                    html += createAromaCard(result.aroma, result.category);
+                });
+                html += '</div>';
+            }
+            
+            contentDisplay.innerHTML = html;
+        }
+
+        // Initialize with all aromas
+        window.addEventListener('load', function() {
+            showAllAromas();
+        });
+    </script>
+</body>
+</html>
